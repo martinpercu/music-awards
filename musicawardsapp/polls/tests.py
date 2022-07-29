@@ -18,13 +18,11 @@ class QuestionModelTests(TestCase):
         future_question = Question(question_text="Question in the future for testing?", pub_date=time_in_future)
         self.assertIs(future_question.was_published_recently(), False)
 
-
     def test_was_published_recently_with_past_question(self):
         """was_published_recently returns False for question whose pub_date is in the past"""
         time_in_the_past = timezone.now() - datetime.timedelta(days=1.01)
         past_question = Question(question_text="Question in the past for testing?", pub_date=time_in_the_past)
         self.assertIs(past_question.was_published_recently(), False)
-
 
     def test_was_published_recently_with_same_moment_question(self):
         """was_published_recently returns True for question whose pub_date is in the future"""
@@ -55,7 +53,6 @@ class QuestionIndexViewTest(TestCase):
         self.assertContains(response, "No polls here in" and "re here there is a probl")
         self.assertQuerysetEqual(response.context["latest_question_list"], [])
 
-
     def test_show_question_of_future(self):
         """If a question from future is show returns False"""
         time_in_future = timezone.now() + datetime.timedelta(days=30)
@@ -66,18 +63,47 @@ class QuestionIndexViewTest(TestCase):
         self.assertNotContains(response, "Question from the future?")
 
 
-    def another_test_show_question_of_future(self):
-        """A question from FUTURE not be displayed in the index:polls"""
+    def test_show_question_of_future_2(self):
+        """A question from FUTURE does not be displayed in the index:polls"""
         create_question("Question from the Future", days=30)
-        response. self.client.get(reverse("polls:index"))
+        response = self.client.get(reverse("polls:index"))
         self.assertContains(response, "No polls here in")
         self.assertQuerysetEqual(response.context["latest_question_list"], [])
 
-
-
-    def test_show_question_of_future(self):
-        """A question from PAST not be displayed in the index:polls"""
-        question = create_question("Question from the Past", days=-10)
-        response. self.client.get(reverse("polls:index"))
-        self.assertContains(response, "No polls here in")
+    def test_show_question_of_past(self):
+        """A question from PAST will be displayed in the index:polls"""
+        question = create_question("Question from the Past", days=-1)
+        response = self.client.get(reverse("polls:index"))
         self.assertQuerysetEqual(response.context["latest_question_list"], [question])
+
+
+    def test_past_and_future_questions(self):
+        """ If there are future and past question. Only the past ones must to be showed"""
+        question_past = create_question(question_text= "Question from past", days=-20)
+        question_future = create_question(question_text= "Question from past", days=20)
+        response = self.client.get(reverse("polls:index"))
+        self.assertQuerysetEqual(
+            response.context["latest_question_list"],
+            [question_past]
+        )
+
+    def test_two_past_questions(self):
+        """ If there are 2 question in the past must to be displayed both of them"""
+        question_past_1 = create_question(question_text= "Question from past", days=-20)
+        question_past_2 = create_question(question_text= "Question from past", days=-22)
+        response = self.client.get(reverse("polls:index"))
+        self.assertQuerysetEqual(
+            response.context["latest_question_list"],
+            [question_past_1, question_past_2]
+        )
+
+    def test_two_future_questions(self):
+        """ If there are 2 question from the future no one will be displayed"""
+        question_future_1 = create_question(question_text= "Question from past", days=10)
+        question_future_2 = create_question(question_text= "Question from past", days=8)
+        response = self.client.get(reverse("polls:index"))
+        self.assertQuerysetEqual(
+            response.context["latest_question_list"],
+            []
+        )
+        
