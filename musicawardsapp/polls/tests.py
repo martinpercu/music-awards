@@ -107,3 +107,21 @@ class QuestionIndexViewTest(TestCase):
             []
         )
         
+
+class QuestionDetailViewTests(TestCase):
+    def test_future_question(self):
+        """ If in the detail view we try a with a question with a pub_date in the future must returns a 404 error"""
+        question_future = create_question(question_text= "Question from past", days=10)
+        url = reverse('polls:detail', args=(question_future.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+
+
+    def test_past_question(self):
+        """ If in the detail view we try a with a question with a pub_date in the past must show the question_text"""
+        question_in_the_past = create_question(question_text= "Question from past", days=-1)
+        url = reverse('polls:detail', args=(question_in_the_past.id,))
+        response = self.client.get(url)
+        self.assertContains(response, question_in_the_past.question_text)
+        
