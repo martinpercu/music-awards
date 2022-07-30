@@ -1,0 +1,9 @@
+li a {
+    color: darkviolet;
+}
+
+body {
+    margin-left: 20%;
+    width: 60%;
+    /* background: white url("image/cheto.gif") no-repeat; */
+}
