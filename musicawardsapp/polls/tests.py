@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.utils import timezone
 from django.urls.base import reverse
 
-from .models import Question
+from .models import Question, Choice
 
 # Create your tests here.
 # Models
@@ -125,3 +125,22 @@ class QuestionDetailViewTests(TestCase):
         response = self.client.get(url)
         self.assertContains(response, question_in_the_past.question_text)
         
+
+def create_choices(question, choice_text, votes):
+    """Will create one choice for a question given:  question is number id question, choice_text the choice itself and vote number of votes"""
+    # # pelado = create_question("helo", 3)
+    # question = question_id
+    # choice_text = choice_text
+    # vote = votes
+    # return Choice.objects.create(question=question, choice_text=choice_text, votes=vote)
+    pass    
+
+    
+class QuestionResultsViewTests(TestCase):
+    def test_show_choices_from_voted_question(self):
+        # pelado = create_question("helo", 3)
+        # preguntin = create_choices(pelado, "El capo maximo Luque", 5)
+        # print(pelado)
+        # print(preguntin)
+        # """ After vote must show all the choices relative to voted question """
+        pass

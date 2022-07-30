@@ -49,7 +49,7 @@ class IndexView(generic.ListView):
     context_object_name = "latest_question_list"
 
     def get_queryset(self):
-        """Return the las seven published questions"""
+        """Return the last seven published questions"""
         # This returns the list avoiding question with futures dates 
         return Question.objects.filter(pub_date__lte=timezone.now()).order_by("-pub_date")[:7]
         
@@ -64,9 +64,6 @@ class DetailView(generic.DetailView):
     def get_queryset(self):
         """ Excludes all futures questions"""
         return Question.objects.filter(pub_date__lte = timezone.now())
-
-    
-
 
 
 
