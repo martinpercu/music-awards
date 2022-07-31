@@ -1,4 +1,47 @@
 {% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'polls/reset.css' %}"> 
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}"> 
+    <title>Music Awards for All</title>
+</head>
+<body>
+    <header>
+        <h2>Music Awards for All</h2>
+    </header>
+    <main>
+        {% if latest_question_list %}
+        <ul>
+        {% for question in latest_question_list  %}
+            <li>
+                <a href="{% url 'polls:detail' question.id %}">  {{question.question_text}} </a> 
+            </li>
+        {% endfor %}
+        </ul>
+        {% else %}
+            <p>No polls here in this page. If you are here there is a problem .</p>
+        {% endif %}        
+    </main>
+    <footer>
+        <a href="https://4timp.com" target="_blank">4timp.com</a>
+        <a href="#">Contact</a>
+        <a href="#">Want to be an artist?</a>
+        <a href="#">No term no conditions</a>
+    </footer>
+</body>
+</html>
+
+
+
+
+
+
+{% comment %} {% load static %}
 <link rel="stylesheet" href="{% static 'polls/style.css' %}"> 
 
 {% if latest_question_list %}
@@ -11,4 +54,4 @@
     </ul>
 {% else %}
     <p>No polls here in this page. If you are here there is a problem .</p>
-{% endif %}
+{% endif %} {% endcomment %}
